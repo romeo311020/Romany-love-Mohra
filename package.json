@@ -1,0 +1,12 @@
+{
+  "name": "mohra-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Confession page with a tiny server that records her answer.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
