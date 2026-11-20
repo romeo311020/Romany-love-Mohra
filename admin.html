@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0f0a2b">
+<title>Mohra Control</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@700&family=Tajawal:wght@400;500;700&family=Great+Vibes&display=swap">
+<style>
+/* Layout: one phone-width column. Status card first (her answer), then three small facts, then a timeline of everything she did. */
+:root {
+  --night: #0f0a2b;
+  --plum: #1d0f46;
+  --card: rgba(255, 255, 255, 0.07);
+  --line: rgba(255, 255, 255, 0.14);
+  --text: #f6eefb;
+  --muted: #c3b6e2;
+  --rose: #ff9fbd;
+  --gold: #ffe0a8;
+  --yes: #7fe3b0;
+  --think: #ffd37a;
+  --no: #9fb4ff;
+  --ink: #2a0f3a;
+  --display: 'Aref Ruqaa', 'Amiri', serif;
+  --script: 'Great Vibes', cursive;
+  --body: 'Tajawal', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { background: var(--night); }
+
+body {
+  margin: 0;
+  direction: rtl;
+  min-height: 100vh;
+  background: radial-gradient(120% 60% at 80% -10%, #3a1a6e 0%, transparent 60%), radial-gradient(90% 50% at 0% 100%, #4a1c5f 0%, transparent 60%), var(--night);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 1.0625rem;
+  line-height: 1.8;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: calc(2rem + env(safe-area-inset-bottom, 0px));
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+.wrap { max-width: 34rem; margin: 0 auto; }
+
+.lat { font-family: var(--script); font-size: 1.5em; line-height: 1; direction: ltr; unicode-bidi: isolate; }
+
+header.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 1.25rem 0.5rem;
+}
+
+header.top h1 { margin: 0; font-family: var(--display); font-size: 1.5rem; color: var(--gold); line-height: 1.4; }
+.live { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--muted); font-size: 0.88rem; }
+.live i { width: 0.55rem; height: 0.55rem; border-radius: 50%; background: var(--yes); box-shadow: 0 0 10px var(--yes); animation: blink 2s ease-in-out infinite; }
+.live.off i { background: #ff8a8a; box-shadow: 0 0 10px #ff8a8a; animation: none; }
+@keyframes blink { 50% { opacity: 0.35; } }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  padding: 1.25rem;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+/* login */
+.login { margin-top: 3rem; display: flex; flex-direction: column; gap: 1rem; }
+.login h2 { margin: 0; font-family: var(--display); font-size: 1.8rem; color: var(--rose); line-height: 1.5; }
+.login p { margin: 0; color: var(--muted); font-size: 0.98rem; }
+
+label { display: block; font-size: 0.92rem; color: var(--muted); margin-bottom: 0.3rem; }
+
+input {
+  display: block;
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.9rem;
+  border: 1.5px solid var(--line);
+  background: rgba(15, 10, 43, 0.7);
+  color: var(--text);
+  font: 1.05rem/1.5 var(--body);
+  direction: ltr;
+  text-align: left;
+}
+
+input:focus-visible, .btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+
+.btn {
+  min-height: 3rem;
+  padding: 0.5rem 1.4rem;
+  border-radius: 999px;
+  border: 1.5px solid transparent;
+  background: linear-gradient(135deg, var(--rose), #ff7aa8);
+  color: var(--ink);
+  font: 700 1.02rem/1.4 var(--body);
+  cursor: pointer;
+}
+.btn.ghost { background: transparent; color: var(--rose); border-color: var(--rose); }
+.btn.small { min-height: 2.4rem; padding: 0.2rem 1rem; font-size: 0.92rem; }
+.btn:disabled { opacity: 0.6; cursor: default; }
+
+.err { color: #ffb4b4; min-height: 1.5rem; font-size: 0.95rem; }
+
+/* status */
+.status { margin-top: 1rem; text-align: center; padding-block: 1.75rem; position: relative; overflow: hidden; }
+.status .eyebrow { margin: 0; color: var(--muted); font-size: 0.95rem; }
+.status .big { margin: 0.4rem 0; font-family: var(--display); font-weight: 700; font-size: clamp(2.2rem, 11vw, 3.2rem); line-height: 1.5; }
+.status .when { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+.status.wait .big { color: var(--gold); }
+.status.yes { border-color: rgba(127, 227, 176, 0.55); box-shadow: 0 0 40px rgba(127, 227, 176, 0.2); }
+.status.yes .big { color: var(--yes); text-shadow: 0 0 24px rgba(127, 227, 176, 0.5); }
+.status.think { border-color: rgba(255, 211, 122, 0.55); }
+.status.think .big { color: var(--think); }
+.status.no { border-color: rgba(159, 180, 255, 0.5); }
+.status.no .big { color: var(--no); }
+
+.pulse { display: inline-flex; gap: 0.4rem; margin-top: 0.75rem; }
+.pulse i { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--gold); animation: dot 1.4s ease-in-out infinite; }
+.pulse i:nth-child(2) { animation-delay: 0.2s; }
+.pulse i:nth-child(3) { animation-delay: 0.4s; }
+@keyframes dot { 0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
+
+.quote {
+  margin: 1rem auto 0;
+  max-width: 28rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 1rem;
+  border: 1px dashed var(--line);
+  background: rgba(15, 10, 43, 0.5);
+  text-align: start;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.quote small { display: block; color: var(--muted); font-size: 0.82rem; margin-bottom: 0.2rem; }
+
+.banner {
+  margin-top: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, var(--gold), #ffd0dc);
+  color: var(--ink);
+  font-weight: 700;
+  text-align: center;
+  animation: pop 0.5s ease both;
+}
+@keyframes pop { from { transform: scale(0.9); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* facts */
+.facts { margin-top: 1rem; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.6rem; }
+.fact { text-align: center; padding: 0.9rem 0.4rem; }
+.fact b { display: block; font-size: 1.5rem; line-height: 1.3; color: var(--gold); }
+.fact span { display: block; font-size: 0.82rem; color: var(--muted); line-height: 1.4; margin-top: 0.15rem; }
+
+/* timeline */
+h2.sec { margin: 1.75rem 0 0.75rem; font-family: var(--display); font-size: 1.35rem; color: var(--rose); line-height: 1.5; }
+
+ul.tl { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+ul.tl li { position: relative; padding: 0.55rem 1.6rem 0.55rem 0; border-inline-start: 0; }
+ul.tl li::before {
+  content: "";
+  position: absolute;
+  right: 0.2rem;
+  top: 1.05rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--line);
+}
+ul.tl li::after { content: ""; position: absolute; right: calc(0.2rem + 0.3rem); top: 1.8rem; bottom: -0.5rem; width: 2px; background: var(--line); }
+ul.tl li:last-child::after { display: none; }
+ul.tl li.ans::before { background: var(--rose); box-shadow: 0 0 12px var(--rose); }
+ul.tl li.ans.yes::before { background: var(--yes); box-shadow: 0 0 12px var(--yes); }
+ul.tl li.ans.think::before { background: var(--think); box-shadow: 0 0 12px var(--think); }
+ul.tl li.ans.no::before { background: var(--no); box-shadow: 0 0 12px var(--no); }
+.tl .what { font-weight: 700; }
+.tl .meta { color: var(--muted); font-size: 0.85rem; }
+.tl .txt { color: var(--muted); font-size: 0.95rem; overflow-wrap: anywhere; }
+
+.empty { color: var(--muted); text-align: center; padding: 1rem; }
+
+.bar { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.75rem; justify-content: center; }
+.hint { color: var(--muted); font-size: 0.85rem; text-align: center; margin-top: 0.75rem; }
+
+.bh { position: fixed; pointer-events: none; z-index: 20; color: var(--rose); }
+.bh svg { display: block; width: 100%; height: 100%; fill: currentColor; }
+
+@media (prefers-reduced-motion: reduce) { .live i, .pulse i, .banner { animation: none; } }
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="heart" viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.7 5 6 5c2 0 3.4 1.1 4.2 2.4h3.6C14.6 6.1 16 5 18 5c3.3 0 5.1 3.4 3.6 6.8C19.5 16.4 12 21 12 21z"/></symbol>
+</svg>
+
+<div class="wrap">
+  <header class="top">
+    <h1><span class="lat" lang="en">Mohra</span> · لوحة التحكم</h1>
+    <span class="live" id="live" hidden><i></i><span id="liveText">متصل</span></span>
+  </header>
+
+  <!-- Login -->
+  <section class="card login" id="loginView">
+    <h2>دخول</h2>
+    <p>الصفحة دي ليك إنت بس. ادخل بالإيميل والباسورد اللي عملتهم في Supabase.</p>
+    <form id="loginForm" style="display:flex;flex-direction:column;gap:1rem">
+      <div><label for="email">الإيميل</label><input id="email" type="email" autocomplete="username" required></div>
+      <div><label for="pass">الباسورد</label><input id="pass" type="password" autocomplete="current-password" required></div>
+      <button class="btn" id="loginBtn" type="submit">دخول</button>
+      <p class="err" id="loginErr" role="alert"></p>
+    </form>
+  </section>
+
+  <!-- Dashboard -->
+  <main id="dashView" hidden>
+    <div class="banner" id="banner" hidden></div>
+
+    <section class="card status wait" id="status" aria-live="polite">
+      <p class="eyebrow" id="stEyebrow">ردها</p>
+      <p class="big" id="stBig">لسه مردتش</p>
+      <p class="when" id="stWhen">هيظهر هنا أول ما تختار وتبعت.</p>
+      <div class="pulse" id="stPulse" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="quote" id="stQuote" hidden><small>رسالتها</small><span id="stMsg"></span></div>
+    </section>
+
+    <section class="facts" aria-label="ملخص">
+      <div class="card fact"><b id="fVisits">0</b><span>مرات فتحت الرابط</span></div>
+      <div class="card fact"><b id="fOpened">لسه</b><span>فتحت الرسالة</span></div>
+      <div class="card fact"><b id="fLast">لسه</b><span>وصلت لصفحة الرد</span></div>
+    </section>
+
+    <h2 class="sec">اللي حصل بالترتيب</h2>
+    <ul class="tl" id="tl"></ul>
+    <p class="empty" id="tlEmpty" hidden>مفيش حاجة لسه.</p>
+
+    <div class="bar">
+      <button class="btn small" id="refresh" type="button">تحديث</button>
+      <button class="btn small ghost" id="logout" type="button">خروج</button>
+    </div>
+    <p class="hint" id="hint">بيتحدث لوحده كل ١٥ ثانية.</p>
+  </main>
+</div>
+
+<script>
+(function () {
+  /* Same values as in index.html. The publishable key is safe to expose: reading needs your login. */
+  var SUPABASE_URL = 'https://xqdbpcjhvjbgsmeaqlvi.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_nWVfgtKF18m5qYniNMr7Xw_bI3q98Fm';
+  var POLL_MS = 15000;
+  var STORE = 'mohra-admin-session';
+
+  var $ = function (id) { return document.getElementById(id); };
+  var base = SUPABASE_URL.replace(/\/+$/, '');
+  var demo = location.hash === '#demo';
+  var session = null;
+  var timer = null;
+  var lastAnswerId = null;
+  var firstLoad = true;
+
+  var LABELS = {
+    yes: { big: 'وافقت', cls: 'yes' },
+    think: { big: 'عايزة تفكر', cls: 'think' },
+    no: { big: 'مش حاسة بنفس الشعور', cls: 'no' }
+  };
+  var EVENT_TEXT = {
+    visit: 'فتحت الرابط',
+    opened: 'ضغطت وفتحت الرسالة',
+    feelings: 'وصلت لصفحة مشاعرك',
+    answer: 'وصلت لصفحة الرد'
+  };
+
+  function save(s) { try { if (s) localStorage.setItem(STORE, JSON.stringify(s)); else localStorage.removeItem(STORE); } catch (e) {} }
+  function load() { try { return JSON.parse(localStorage.getItem(STORE) || 'null'); } catch (e) { return null; } }
+
+  function fmtTime(iso) {
+    try {
+      return new Intl.DateTimeFormat('ar-EG', { timeZone: 'Africa/Cairo', weekday: 'long', day: 'numeric', month: 'long', hour: 'numeric', minute: '2-digit' }).format(new Date(iso));
+    } catch (e) { return iso; }
+  }
+  var nf = new Intl.NumberFormat('ar-EG');
+  function fmtAgo(iso) {
+    var s = Math.max(0, (Date.now() - new Date(iso).getTime()) / 1000);
+    if (s < 45) return 'دلوقتي';
+    var m = Math.round(s / 60);
+    if (m < 60) return 'من ' + nf.format(m) + ' دقيقة';
+    var h = Math.round(m / 60);
+    if (h < 24) return 'من ' + nf.format(h) + ' ساعة';
+    return 'من ' + nf.format(Math.round(h / 24)) + ' يوم';
+  }
+
+  /* ---- auth ---- */
+  function authCall(path, body) {
+    return fetch(base + '/auth/v1/' + path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
+      body: JSON.stringify(body)
+    }).then(function (r) {
+      return r.json().then(function (j) { if (!r.ok) throw new Error(j.error_description || j.msg || j.message || 'failed'); return j; });
+    });
+  }
+  function adopt(j) {
+    session = { access: j.access_token, refresh: j.refresh_token, exp: Date.now() + (j.expires_in || 3600) * 1000 };
+    save({ refresh: session.refresh });
+  }
+  function ensureToken() {
+    if (session && session.exp - Date.now() > 60000) return Promise.resolve();
+    var rt = (session && session.refresh) || (load() || {}).refresh;
+    if (!rt) return Promise.reject(new Error('no_session'));
+    return authCall('token?grant_type=refresh_token', { refresh_token: rt }).then(adopt);
+  }
+
+  /* ---- data ---- */
+  function get(table, qs) {
+    return fetch(base + '/rest/v1/' + table + '?' + qs, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + session.access }
+    }).then(function (r) {
+      if (!r.ok) throw new Error('read_failed');
+      return r.json();
+    });
+  }
+  function fetchAll() {
+    if (demo) return Promise.resolve(demoData());
+    return ensureToken().then(function () {
+      return Promise.all([
+        get('answers', 'select=id,created_at,choice,message&order=created_at.desc&limit=20'),
+        get('events', 'select=id,created_at,kind&order=created_at.desc&limit=200')
+      ]);
+    });
+  }
+  function demoData() {
+    var now = Date.now();
+    var ago = function (min) { return new Date(now - min * 60000).toISOString(); };
+    return [
+      [{ id: 2, created_at: ago(3), choice: 'think', message: 'الموضوع مفاجئ ومحتاجة وقت أفكر، وهرد عليك لما أكون جاهزة.' }],
+      [
+        { id: 9, created_at: ago(4), kind: 'answer' },
+        { id: 8, created_at: ago(7), kind: 'feelings' },
+        { id: 7, created_at: ago(11), kind: 'opened' },
+        { id: 6, created_at: ago(12), kind: 'visit' },
+        { id: 5, created_at: ago(190), kind: 'visit' }
+      ]
+    ];
+  }
+
+  /* ---- render ---- */
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  function render(answers, events) {
+    var st = $('status');
+    var latest = answers[0];
+    if (latest && LABELS[latest.choice]) {
+      var L = LABELS[latest.choice];
+      st.className = 'card status ' + L.cls;
+      $('stEyebrow').textContent = 'ردها';
+      $('stBig').textContent = L.big;
+      $('stWhen').textContent = fmtTime(latest.created_at) + '، ' + fmtAgo(latest.created_at);
+      $('stPulse').hidden = true;
+      var msg = (latest.message || '').trim();
+      $('stQuote').hidden = !msg;
+      $('stMsg').textContent = msg;
+    } else {
+      st.className = 'card status wait';
+      $('stEyebrow').textContent = 'ردها';
+      $('stBig').textContent = 'لسه مردتش';
+      $('stWhen').textContent = events.length ? 'هي شافت الرابط، وهيظهر هنا أول ما تختار وتبعت.' : 'هيظهر هنا أول ما تختار وتبعت.';
+      $('stPulse').hidden = false;
+      $('stQuote').hidden = true;
+    }
+
+    var visits = events.filter(function (e) { return e.kind === 'visit'; }).length;
+    var firstOf = function (kind) {
+      var list = events.filter(function (e) { return e.kind === kind; });
+      return list.length ? list[list.length - 1] : null;
+    };
+    var opened = firstOf('opened');
+    var last = firstOf('answer');
+    $('fVisits').textContent = nf.format(visits);
+    $('fOpened').textContent = opened ? 'آه' : 'لسه';
+    $('fLast').textContent = last ? 'آه' : 'لسه';
+
+    var rows = [];
+    events.forEach(function (e) { rows.push({ t: e.created_at, kind: 'ev', e: e }); });
+    answers.forEach(function (a) { rows.push({ t: a.created_at, kind: 'ans', a: a }); });
+    rows.sort(function (x, y) { return new Date(y.t) - new Date(x.t); });
+
+    var tl = $('tl');
+    tl.textContent = '';
+    rows.slice(0, 60).forEach(function (r) {
+      var li = el('li');
+      if (r.kind === 'ans') {
+        var L2 = LABELS[r.a.choice] || { big: r.a.choice, cls: '' };
+        li.className = 'ans ' + L2.cls;
+        li.appendChild(el('div', 'what', 'ردّت: ' + L2.big));
+        if (r.a.message) li.appendChild(el('div', 'txt', r.a.message));
+      } else {
+        li.appendChild(el('div', 'what', EVENT_TEXT[r.e.kind] || r.e.kind));
+      }
+      li.appendChild(el('div', 'meta', fmtTime(r.t) + '، ' + fmtAgo(r.t)));
+      tl.appendChild(li);
+    });
+    $('tlEmpty').hidden = rows.length > 0;
+
+    if (latest) {
+      if (!firstLoad && lastAnswerId !== null && latest.id !== lastAnswerId) announce(latest);
+      lastAnswerId = latest.id;
+    } else if (lastAnswerId === null) {
+      lastAnswerId = 0;
+    }
+    firstLoad = false;
+  }
+
+  function announce(a) {
+    var L = LABELS[a.choice];
+    var b = $('banner');
+    b.textContent = 'وصل رد جديد: ' + (L ? L.big : '');
+    b.hidden = false;
+    try { document.title = '● ' + (L ? L.big : 'رد جديد'); } catch (e) {}
+    try { if (navigator.vibrate) navigator.vibrate([120, 80, 120]); } catch (e) {}
+    if (a.choice === 'yes') hearts();
+  }
+
+  function hearts() {
+    for (var i = 0; i < 26; i++) {
+      var h = document.createElement('span');
+      h.className = 'bh';
+      var s = 12 + Math.random() * 18;
+      h.style.cssText = 'left:' + (10 + Math.random() * 80) + '%;top:' + (60 + Math.random() * 25) + '%;width:' + s + 'px;height:' + s + 'px';
+      h.innerHTML = '<svg viewBox="0 0 24 24"><use href="#heart"/></svg>';
+      document.body.appendChild(h);
+      if (!h.animate) { h.remove(); continue; }
+      var a = h.animate([
+        { transform: 'translateY(0) scale(0.6)', opacity: 1 },
+        { transform: 'translateY(-' + (200 + Math.random() * 300) + 'px) scale(1.1)', opacity: 0 }
+      ], { duration: 1600 + Math.random() * 1400, easing: 'ease-out' });
+      a.onfinish = (function (n) { return function () { n.remove(); }; })(h);
+    }
+  }
+
+  /* ---- loop ---- */
+  function setLive(ok) {
+    $('live').hidden = false;
+    $('live').className = 'live' + (ok ? '' : ' off');
+    $('liveText').textContent = ok ? 'متصل' : 'مفيش اتصال';
+  }
+
+  function refresh() {
+    return fetchAll().then(function (res) {
+      render(res[0], res[1]);
+      setLive(true);
+      $('hint').textContent = demo ? 'ده عرض تجريبي ببيانات وهمية.' : 'بيتحدث لوحده كل ١٥ ثانية. آخر تحديث: ' + new Intl.DateTimeFormat('ar-EG', { hour: 'numeric', minute: '2-digit' }).format(new Date());
+    }).catch(function (e) {
+      setLive(false);
+      if (e && e.message === 'no_session') return signedOut();
+      $('hint').textContent = 'مقدرتش أقرا البيانات. اتأكد من الإيميل جوه صلاحيات القراءة في Supabase.';
+    });
+  }
+
+  function start() {
+    $('loginView').hidden = true;
+    $('dashView').hidden = false;
+    refresh();
+    clearInterval(timer);
+    timer = setInterval(function () { if (!document.hidden) refresh(); }, POLL_MS);
+  }
+
+  function signedOut() {
+    clearInterval(timer);
+    session = null;
+    save(null);
+    $('dashView').hidden = true;
+    $('loginView').hidden = false;
+    $('live').hidden = true;
+  }
+
+  $('loginForm').addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var btn = $('loginBtn');
+    btn.disabled = true;
+    $('loginErr').textContent = '';
+    authCall('token?grant_type=password', { email: $('email').value.trim(), password: $('pass').value })
+      .then(function (j) { adopt(j); $('pass').value = ''; start(); })
+      .catch(function () { $('loginErr').textContent = 'الإيميل أو الباسورد غلط.'; })
+      .then(function () { btn.disabled = false; });
+  });
+
+  $('refresh').addEventListener('click', function () { $('banner').hidden = true; refresh(); });
+  $('logout').addEventListener('click', signedOut);
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden && !$('dashView').hidden) { document.title = 'Mohra Control'; refresh(); }
+  });
+
+  if (demo) {
+    start();
+  } else if ((load() || {}).refresh) {
+    ensureToken().then(start).catch(signedOut);
+  }
+})();
+</script>
