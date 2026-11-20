@@ -53,11 +53,9 @@ body {
   overflow: hidden;
   pointer-events: none;
   background: linear-gradient(180deg, #0f0a2b 0%, #1d0f46 50%, #0f0a2b 100%);
-  opacity: calc(0.82 + var(--beat) * 0.18);
-  transition: filter 2.4s ease;
 }
 
-.aurora i { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.6; will-change: transform; }
+.aurora i { position: absolute; border-radius: 50%; opacity: 0.6; will-change: transform; }
 .aurora i:nth-child(1) { width: 60vmax; height: 60vmax; left: -20vmax; top: -18vmax; background: radial-gradient(circle, #8a2f86, transparent 65%); animation: drift1 24s ease-in-out infinite alternate; }
 .aurora i:nth-child(2) { width: 55vmax; height: 55vmax; right: -22vmax; top: 22vh; background: radial-gradient(circle, rgba(255, 111, 159, 0.55), transparent 65%); animation: drift2 28s ease-in-out infinite alternate; }
 .aurora i:nth-child(3) { width: 50vmax; height: 50vmax; left: 8vw; bottom: -26vmax; background: radial-gradient(circle, #3b3bb8, transparent 65%); animation: drift3 32s ease-in-out infinite alternate; }
@@ -87,9 +85,12 @@ body {
 .bh i { display: block; width: 100%; height: 100%; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px currentColor; }
 
 /* mood of the whole page after she answers */
-.mood-yes .aurora { filter: saturate(1.5) brightness(1.2); }
-.mood-think .aurora { filter: hue-rotate(35deg) saturate(0.85) brightness(0.9); }
-.mood-no .aurora { filter: hue-rotate(150deg) saturate(0.55) brightness(0.6); }
+/* cheap overlays instead of filtering the whole background */
+#pulse { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0; will-change: opacity; background: radial-gradient(60% 45% at 50% 38%, rgba(255, 111, 159, 0.4), transparent 70%); }
+#tint { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 2s ease; }
+.mood-yes #tint { opacity: 1; background: radial-gradient(80% 60% at 50% 40%, rgba(255, 100, 160, 0.28), transparent 75%); }
+.mood-think #tint { opacity: 1; background: rgba(40, 30, 110, 0.38); }
+.mood-no #tint { opacity: 1; background: rgba(8, 16, 48, 0.62); }
 .mood-no #hearts { opacity: 0.12; }
 
 /* ---------- script names ---------- */
@@ -109,12 +110,10 @@ body {
   gap: 0.9rem;
   padding: 2rem;
   text-align: center;
-  background: rgba(15, 10, 43, 0.5);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  transition: opacity 1s ease, transform 1s ease, filter 1s ease;
+  background: rgba(15, 10, 43, 0.8);
+  transition: opacity 0.9s ease, transform 0.9s ease;
 }
-.gate.open { opacity: 0; transform: scale(1.12); filter: blur(12px); pointer-events: none; }
+.gate.open { opacity: 0; transform: scale(1.08); pointer-events: none; }
 .gate .kicker { margin: 0; color: var(--muted); font-size: 1rem; }
 
 .gate .gname {
@@ -130,7 +129,6 @@ body {
   background-clip: text;
   color: transparent;
   filter: drop-shadow(0 0 22px rgba(255, 159, 189, 0.45));
-  animation: shimmer 8s linear infinite;
 }
 
 .seal {
@@ -162,7 +160,10 @@ body {
   inset: 0;
   z-index: 25;
   display: grid;
-  place-items: center;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  align-items: center;
+  justify-items: center;
   padding: 2rem;
   text-align: center;
   background: radial-gradient(ellipse at center, rgba(15, 10, 43, 0.15), rgba(15, 10, 43, 0.82));
@@ -172,7 +173,7 @@ body {
 .intro.on { opacity: 1; }
 .intro.out { opacity: 0; }
 
-.iline, .iname { grid-area: 1 / 1; }
+.iline, .iname { grid-area: 1 / 1; width: 100%; text-align: center; }
 
 .iline {
   margin: 0;
@@ -206,7 +207,7 @@ body {
   transform: scale(0.7);
   transition: opacity 1.6s ease, filter 1.6s ease, transform 1.8s cubic-bezier(0.2, 0.7, 0.2, 1);
 }
-.iname.show { opacity: 1; transform: none; filter: drop-shadow(0 0 30px rgba(255, 159, 189, 0.6)) blur(0); animation: shimmer 6s linear infinite; }
+.iname.show { opacity: 1; transform: none; filter: drop-shadow(0 0 30px rgba(255, 159, 189, 0.6)) blur(0); }
 
 .skip {
   position: absolute;
@@ -233,8 +234,8 @@ body {
 .js .reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.9s ease, transform 0.9s ease; transition-delay: var(--d, 0s); }
 .js .reveal.in { opacity: 1; transform: none; }
 
-.js .words .w { display: inline-block; opacity: 0; transform: translateY(10px); filter: blur(6px); transition: opacity 0.7s ease, transform 0.7s ease, filter 0.7s ease; transition-delay: calc(var(--i) * 75ms); }
-.js .words.in .w { opacity: 1; transform: none; filter: none; }
+.js .words .w { display: inline-block; opacity: 0; transform: translateY(10px); transition: opacity 0.7s ease, transform 0.7s ease; transition-delay: calc(var(--i) * 75ms); }
+.js .words.in .w { opacity: 1; transform: none; }
 
 .dots { display: flex; justify-content: center; gap: 0.6rem; padding-top: 1.75rem; }
 .dots i { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: rgba(255, 255, 255, 0.2); transition: all 0.4s ease; }
@@ -257,9 +258,9 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 0 calc(18px + var(--beat) * 34px) rgba(255, 159, 189, calc(0.35 + var(--beat) * 0.45)));
+  filter: drop-shadow(0 0 22px rgba(255, 159, 189, 0.4));
 }
-.opened .name { animation: nameIn 1.5s ease backwards, shimmer 8s linear infinite; }
+.opened .name { animation: nameIn 1.5s ease backwards; }
 
 @keyframes nameIn { from { opacity: 0; transform: scale(0.88); filter: blur(14px); } to { opacity: 1; transform: none; filter: blur(0); } }
 @keyframes shimmer { to { background-position: -220% 0; } }
@@ -277,7 +278,7 @@ p { margin: 0 0 1rem; max-width: 65ch; }
 p:last-child { margin-bottom: 0; }
 
 /* ---------- song card ---------- */
-.song { display: flex; align-items: center; gap: 1rem; padding: 1.25rem; border: 1px solid var(--line); border-radius: 1.25rem; background: var(--glass); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.song { display: flex; align-items: center; gap: 1rem; padding: 1.25rem; border: 1px solid var(--line); border-radius: 1.25rem; background: rgba(255, 255, 255, 0.08); }
 
 .disc {
   flex: none;
@@ -289,7 +290,6 @@ p:last-child { margin-bottom: 0; }
     radial-gradient(circle at 50% 50%, #0f0a2b 0 11%, var(--rose) 12% 16%, transparent 17%),
     repeating-radial-gradient(circle, #1a0f40 0 3px, #2d1a66 3px 5px);
   box-shadow: 0 0 22px rgba(255, 159, 189, 0.35);
-  scale: calc(1 + var(--beat) * 0.09);
 }
 .playing .disc { animation: spin 5s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -355,9 +355,8 @@ ul.likes li::before { content: ""; position: absolute; inset-inline-start: 0; to
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 0 calc(14px + var(--beat) * 26px) rgba(255, 159, 189, calc(0.4 + var(--beat) * 0.4)));
+  filter: drop-shadow(0 0 18px rgba(255, 159, 189, 0.5));
   text-wrap: balance;
-  animation: shimmer 7s linear infinite;
 }
 
 .caption { margin: 0; color: var(--muted); font-size: 0.98rem; }
@@ -371,9 +370,7 @@ ul.likes li::before { content: ""; position: absolute; inset-inline-start: 0; to
   padding: 0.6rem 1.25rem;
   border-radius: 1rem;
   border: 1.5px solid var(--line);
-  background: var(--glass);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.08);
   color: var(--text);
   font: 700 1.1rem/1.5 var(--body);
   text-align: start;
@@ -411,6 +408,39 @@ label.small { display: block; color: var(--muted); font-size: 0.95rem; margin-bo
 textarea { display: block; width: 100%; min-height: 7rem; padding: 0.9rem 1rem; border-radius: 1rem; border: 1.5px solid var(--line); background: rgba(15, 10, 43, 0.7); color: var(--text); font: 1.05rem/1.8 var(--body); direction: rtl; resize: vertical; }
 .status { min-height: 1.5rem; margin: 0.5rem 0 0; color: var(--muted); font-size: 0.95rem; }
 
+/* ---------- name check (glass sheet) ---------- */
+.modal { position: fixed; inset: 0; z-index: 40; display: grid; place-items: center; padding: 1.25rem; background: rgba(10, 6, 30, 0.62); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); animation: paneIn 0.35s ease both; }
+.sheet {
+  width: 100%;
+  max-width: 24rem;
+  padding: 1.6rem 1.4rem;
+  border-radius: 1.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.07));
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+  text-align: center;
+}
+.sheet h3 { margin: 0 0 0.5rem; font-family: var(--display); font-size: 1.7rem; line-height: 1.5; color: var(--gold); }
+.sheet p { margin-inline: auto; }
+.field {
+  display: block;
+  width: 100%;
+  min-height: 3.4rem;
+  margin-top: 0.4rem;
+  padding: 0.6rem 1rem;
+  border-radius: 1rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.38);
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text);
+  font: 700 1.2rem/1.5 var(--body);
+  text-align: center;
+}
+.field::placeholder { color: rgba(246, 238, 251, 0.6); font-weight: 400; }
+.field:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.sheet .actions { justify-content: center; }
+
 /* ---------- music button ---------- */
 .music {
   position: fixed;
@@ -421,9 +451,7 @@ textarea { display: block; width: 100%; min-height: 7rem; padding: 0.9rem 1rem; 
   height: 3.4rem;
   border-radius: 50%;
   border: 1.5px solid var(--rose);
-  background: rgba(43, 16, 85, 0.85);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  background: rgba(43, 16, 85, 0.94);
   color: var(--rose);
   display: grid;
   place-items: center;
@@ -434,7 +462,6 @@ textarea { display: block; width: 100%; min-height: 7rem; padding: 0.9rem 1rem; 
 .music .ic-pause { display: none; }
 .playing .music .ic-pause { display: block; }
 .playing .music .ic-play { display: none; }
-.playing .music { box-shadow: 0 0 calc(18px + var(--beat) * 30px) rgba(255, 159, 189, calc(0.4 + var(--beat) * 0.5)); }
 
 @media (prefers-reduced-motion: reduce) {
   .aurora i, .name, .gate .gname, .say, .bigheart, .seal, .seal::before, .seal::after, .pane, .result, .iname.show,
@@ -451,9 +478,11 @@ textarea { display: block; width: 100%; min-height: 7rem; padding: 0.9rem 1rem; 
 </svg>
 
 <div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+<div id="pulse" aria-hidden="true"></div>
+<div id="tint" aria-hidden="true"></div>
 <canvas id="sky" aria-hidden="true"></canvas>
 <div id="hearts" aria-hidden="true"></div>
-<canvas id="fx" aria-hidden="true"></canvas>
+<canvas id="fx" hidden aria-hidden="true"></canvas>
 
 <!-- Gate: one tap opens the letter and starts the song -->
 <div class="gate" id="gate">
@@ -573,7 +602,7 @@ textarea { display: block; width: 100%; min-height: 7rem; padding: 0.9rem 1rem; 
           </svg>
         </div>
         <p class="note" id="note"></p>
-        <p id="resultHelp">ده ردك، وتقدري تعدليه زي ما تحبي. لما تدوسي "ابعتي الرد" هيوصله هو بس. وتقدري كمان تنسخيه وتبعتيه بنفسك.</p>
+        <p id="resultHelp">ده ردك، وتقدري تعدليه زي ما تحبي. لما تدوسي "ابعتي الرد" هنطلب منك تكتبي اسمك، وبعدها هيوصله هو بس. وتقدري كمان تنسخيه وتبعتيه بنفسك.</p>
         <label class="small" for="msg">رسالتك</label>
         <textarea id="msg"></textarea>
         <div class="actions">
@@ -594,6 +623,21 @@ textarea { display: block; width: 100%; min-height: 7rem; padding: 0.9rem 1rem; 
   <svg class="ic-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
   <svg class="ic-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>
 </button>
+
+<!-- Name check: she types her name (or any word) before the answer is sent -->
+<div class="modal" id="modal" hidden>
+  <form class="sheet" id="signForm" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <h3 id="mTitle">خطوة أخيرة</h3>
+    <p>اكتبي اسمك، أو أي كلمة تحبيها، عشان يعرف إن الرد ده منك إنتي.</p>
+    <label class="small" for="signName">اسمك</label>
+    <input class="field" id="signName" type="text" maxlength="40" autocomplete="off" placeholder="اكتبي اسمك هنا" required>
+    <div class="actions">
+      <button type="submit" class="btn" id="signGo" disabled>تأكيد وإرسال</button>
+      <button type="button" class="btn ghost" id="signBack">رجوع</button>
+    </div>
+    <p class="status" id="signStatus" role="status" aria-live="polite"></p>
+  </form>
+</div>
 
 <script>
 (function () {
@@ -725,6 +769,8 @@ textarea { display: block; width: 100%; min-height: 7rem; padding: 0.9rem 1rem; 
   var audio = null;
   var ctx = null, analyser = null, gainNode = null, bins = null;
   var beat = 0, beatRunning = false, lastBeatHeart = 0;
+  var pulseEl = document.getElementById('pulse');
+  var discEl = document.querySelector('.disc');
   if (SONG.title) document.getElementById('songTitle').textContent = SONG.title;
 
   function sync() {
@@ -830,11 +876,13 @@ textarea { display: block; width: 100%; min-height: 7rem; padding: 0.9rem 1rem; 
     } else {
       beat *= 0.9;
     }
-    root.style.setProperty('--beat', beat.toFixed(3));
+    pulseEl.style.opacity = (beat * 0.6).toFixed(3);
+    discEl.style.scale = (1 + beat * 0.09).toFixed(3);
     if (playing || beat > 0.02) {
       requestAnimationFrame(beatLoop);
     } else {
-      root.style.setProperty('--beat', '0');
+      pulseEl.style.opacity = '0';
+      discEl.style.scale = '1';
       beatRunning = false;
     }
   }
@@ -843,7 +891,7 @@ textarea { display: block; width: 100%; min-height: 7rem; padding: 0.9rem 1rem; 
   var layer = document.getElementById('hearts');
 
   if (!reduce) {
-    var n = window.innerWidth < 600 ? 10 : 18;
+    var n = window.innerWidth < 600 ? 8 : 14;
     for (var i = 0; i < n; i++) {
       var t = rnd(14, 26);
       var hh = document.createElement('span');
@@ -914,11 +962,11 @@ textarea { display: block; width: 100%; min-height: 7rem; padding: 0.9rem 1rem; 
   /* ================= FX: fireworks and rain ================= */
   var fx = document.getElementById('fx');
   var fc = fx.getContext('2d');
-  var W = 0, H = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var W = 0, H = 0, dpr = Math.min(window.devicePixelRatio || 1, 1.5), lastDraw = 0;
   var sparks = [], drops = [];
   var fireUntil = 0, rainUntil = 0, nextFire = 0, fxRunning = false;
 
-  function fxKick() { if (!fxRunning) { fxRunning = true; requestAnimationFrame(fxLoop); } }
+  function fxKick() { if (!fxRunning) { fxRunning = true; fx.hidden = false; requestAnimationFrame(fxLoop); } }
 
   function addSpark(x, y, vx, vy, hue, decay) {
     sparks.push({ x: x, y: y, px: x, py: y, vx: vx, vy: vy, hue: hue, life: 1, decay: decay });
@@ -993,6 +1041,7 @@ textarea { display: block; width: 100%; min-height: 7rem; padding: 0.9rem 1rem; 
     } else {
       fc.clearRect(0, 0, W, H);
       fxRunning = false;
+      fx.hidden = true;
     }
   }
 
@@ -1147,20 +1196,50 @@ textarea { display: block; width: 100%; min-height: 7rem; padding: 0.9rem 1rem; 
     }
   });
 
+  var modal = document.getElementById('modal');
+  var signForm = document.getElementById('signForm');
+  var signName = document.getElementById('signName');
+  var signGo = document.getElementById('signGo');
+  var signBack = document.getElementById('signBack');
+  var signStatus = document.getElementById('signStatus');
+
+  function closeModal() { modal.hidden = true; }
+  function postAnswer(payload) {
+    return fetch(sbUrl('answers'), { method: 'POST', headers: sbHeaders(), body: JSON.stringify(payload) });
+  }
+
   sendBtn.addEventListener('click', function () {
     if (!current) return;
-    sendBtn.disabled = true;
-    status.textContent = 'بيتبعت...';
-    fetch(sbUrl('answers'), {
-      method: 'POST',
-      headers: sbHeaders(),
-      body: JSON.stringify({ choice: current, message: msg.value.slice(0, 500) })
+    signName.value = '';
+    signGo.disabled = true;
+    signStatus.textContent = '';
+    modal.hidden = false;
+    setTimeout(function () { signName.focus(); }, 60);
+  });
+  signName.addEventListener('input', function () { signGo.disabled = signName.value.trim().length < 2; });
+  signBack.addEventListener('click', closeModal);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) closeModal(); });
+
+  signForm.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    var nm = signName.value.trim().slice(0, 40);
+    if (nm.length < 2) return;
+    signGo.disabled = true;
+    signStatus.textContent = 'بيتبعت...';
+    var text = msg.value.slice(0, 500);
+    postAnswer({ choice: current, message: text, signed_name: nm }).then(function (r) {
+      if (r.ok) return r;
+      /* If the signed_name column does not exist yet, keep the name inside the message instead. */
+      if (r.status === 400 || r.status === 404) return postAnswer({ choice: current, message: ('[' + nm + '] ' + text).slice(0, 500) });
+      return r;
     }).then(function (r) {
       if (!r.ok) throw new Error('failed');
-      status.textContent = 'وصله ردك. شكراً.';
+      closeModal();
+      sendBtn.disabled = true;
+      status.textContent = 'وصله ردك يا ' + nm + '. شكراً.';
     }).catch(function () {
-      sendBtn.disabled = false;
-      status.textContent = 'مقدرتش أبعت دلوقتي. انسخي الرسالة وابعتيها له بنفسك.';
+      signGo.disabled = false;
+      signStatus.textContent = 'مقدرتش أبعت دلوقتي. جربي تاني، أو انسخي الرسالة وابعتيها له بنفسك.';
     });
   });
 
@@ -1172,13 +1251,11 @@ textarea { display: block; width: 100%; min-height: 7rem; padding: 0.9rem 1rem; 
   function size() {
     W = window.innerWidth;
     H = window.innerHeight;
-    [c, fx].forEach(function (cv) {
-      cv.width = W * dpr;
-      cv.height = H * dpr;
-      cv.style.width = W + 'px';
-      cv.style.height = H + 'px';
-    });
-    x.setTransform(dpr, 0, 0, dpr, 0, 0);
+    c.width = W; c.height = H;
+    c.style.width = W + 'px'; c.style.height = H + 'px';
+    fx.width = W * dpr; fx.height = H * dpr;
+    fx.style.width = W + 'px'; fx.style.height = H + 'px';
+    x.setTransform(1, 0, 0, 1, 0, 0);
     fc.setTransform(dpr, 0, 0, dpr, 0, 0);
     var count = Math.round((W * H) / 8000);
     stars = [];
@@ -1188,6 +1265,8 @@ textarea { display: block; width: 100%; min-height: 7rem; padding: 0.9rem 1rem; 
   }
 
   function draw(t) {
+    if (!reduce && t - lastDraw < 40) { requestAnimationFrame(draw); return; }
+    lastDraw = t;
     x.clearRect(0, 0, W, H);
     for (var i = 0; i < stars.length; i++) {
       var s = stars[i];

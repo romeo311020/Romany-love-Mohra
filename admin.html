@@ -117,6 +117,8 @@ input:focus-visible, .btn:focus-visible { outline: 3px solid var(--gold); outlin
 .status .eyebrow { margin: 0; color: var(--muted); font-size: 0.95rem; }
 .status .big { margin: 0.4rem 0; font-family: var(--display); font-weight: 700; font-size: clamp(2.2rem, 11vw, 3.2rem); line-height: 1.5; }
 .status .when { margin: 0; color: var(--muted); font-size: 0.95rem; }
+.status .signed { margin: 0.7rem 0 0; color: var(--gold); font-size: 1.05rem; }
+.status .signed b { font-weight: 700; overflow-wrap: anywhere; }
 
 .status.wait .big { color: var(--gold); }
 .status.yes { border-color: rgba(127, 227, 176, 0.55); box-shadow: 0 0 40px rgba(127, 227, 176, 0.2); }
@@ -229,6 +231,7 @@ ul.tl li.ans.no::before { background: var(--no); box-shadow: 0 0 12px var(--no);
       <p class="eyebrow" id="stEyebrow">ردها</p>
       <p class="big" id="stBig">لسه مردتش</p>
       <p class="when" id="stWhen">هيظهر هنا أول ما تختار وتبعت.</p>
+      <p class="signed" id="stSigned" hidden>الاسم اللي كتبته: <b id="stName"></b></p>
       <div class="pulse" id="stPulse" aria-hidden="true"><i></i><i></i><i></i></div>
       <div class="quote" id="stQuote" hidden><small>رسالتها</small><span id="stMsg"></span></div>
     </section>
@@ -332,7 +335,7 @@ ul.tl li.ans.no::before { background: var(--no); box-shadow: 0 0 12px var(--no);
     if (demo) return Promise.resolve(demoData());
     return ensureToken().then(function () {
       return Promise.all([
-        get('answers', 'select=id,created_at,choice,message&order=created_at.desc&limit=20'),
+        get('answers', 'select=*&order=created_at.desc&limit=20'),
         get('events', 'select=id,created_at,kind&order=created_at.desc&limit=200')
       ]);
     });
@@ -341,7 +344,7 @@ ul.tl li.ans.no::before { background: var(--no); box-shadow: 0 0 12px var(--no);
     var now = Date.now();
     var ago = function (min) { return new Date(now - min * 60000).toISOString(); };
     return [
-      [{ id: 2, created_at: ago(3), choice: 'think', message: 'الموضوع مفاجئ ومحتاجة وقت أفكر، وهرد عليك لما أكون جاهزة.' }],
+      [{ id: 2, created_at: ago(3), choice: 'think', signed_name: 'Mohra', message: 'الموضوع مفاجئ ومحتاجة وقت أفكر، وهرد عليك لما أكون جاهزة.' }],
       [
         { id: 9, created_at: ago(4), kind: 'answer' },
         { id: 8, created_at: ago(7), kind: 'feelings' },
@@ -370,6 +373,9 @@ ul.tl li.ans.no::before { background: var(--no); box-shadow: 0 0 12px var(--no);
       $('stBig').textContent = L.big;
       $('stWhen').textContent = fmtTime(latest.created_at) + '، ' + fmtAgo(latest.created_at);
       $('stPulse').hidden = true;
+      var signed = (latest.signed_name || '').trim();
+      $('stSigned').hidden = !signed;
+      $('stName').textContent = signed;
       var msg = (latest.message || '').trim();
       $('stQuote').hidden = !msg;
       $('stMsg').textContent = msg;
@@ -379,6 +385,7 @@ ul.tl li.ans.no::before { background: var(--no); box-shadow: 0 0 12px var(--no);
       $('stBig').textContent = 'لسه مردتش';
       $('stWhen').textContent = events.length ? 'هي شافت الرابط، وهيظهر هنا أول ما تختار وتبعت.' : 'هيظهر هنا أول ما تختار وتبعت.';
       $('stPulse').hidden = false;
+      $('stSigned').hidden = true;
       $('stQuote').hidden = true;
     }
 
@@ -406,6 +413,7 @@ ul.tl li.ans.no::before { background: var(--no); box-shadow: 0 0 12px var(--no);
         var L2 = LABELS[r.a.choice] || { big: r.a.choice, cls: '' };
         li.className = 'ans ' + L2.cls;
         li.appendChild(el('div', 'what', 'ردّت: ' + L2.big));
+        if (r.a.signed_name) li.appendChild(el('div', 'txt', 'كتبت اسمها: ' + r.a.signed_name));
         if (r.a.message) li.appendChild(el('div', 'txt', r.a.message));
       } else {
         li.appendChild(el('div', 'what', EVENT_TEXT[r.e.kind] || r.e.kind));

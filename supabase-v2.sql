@@ -24,3 +24,6 @@ create or replace function public.notify_answer() returns trigger language plpgs
 
 -- 8.
 create trigger answer_notify after insert on public.answers for each row execute function public.notify_answer();
+
+-- 9. Column that stores the name she types before sending. Run this one FIRST if you can.
+alter table public.answers add column signed_name text check (char_length(signed_name) <= 60);
