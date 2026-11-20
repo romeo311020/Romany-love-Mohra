@@ -5,10 +5,10 @@
 <meta name="robots" content="noindex, nofollow">
 <meta name="theme-color" content="#0f0a2b">
 <script>document.documentElement.className = 'js';</script>
-<title>رسالة لمهرائيل</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@400;500;700&display=swap">
+<title>For Mohra</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@400;500;700&family=Great+Vibes&display=swap">
 <style>
-/* Layout: three pages in one narrow column (start, feelings, answer) over a slow violet aurora, drifting hearts and stars. One bold move: the shimmering calligraphic name. */
+/* Layout: a sealed-letter gate, then three pages (start, feelings, answer) in one narrow column over a slow violet aurora, drifting hearts and stars. One bold move: the shimmering script name. */
 :root {
   --night: #0f0a2b;
   --plum: #2b1055;
@@ -22,11 +22,13 @@
   --glass: rgba(255, 255, 255, 0.07);
   --ink: #2a0f3a;
   --display: 'Aref Ruqaa', 'Amiri', serif;
+  --script: 'Great Vibes', 'Pinyon Script', cursive;
   --body: 'Tajawal', system-ui, -apple-system, 'Segoe UI', sans-serif;
   color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { background: var(--night); }
 
 body {
@@ -44,7 +46,7 @@ body {
   padding-right: max(16px, env(safe-area-inset-right, 0px));
 }
 
-/* background layers */
+/* ---------- background layers ---------- */
 .aurora {
   position: fixed;
   inset: 0;
@@ -121,14 +123,102 @@ body {
 .bh { position: absolute; display: block; color: var(--rose); pointer-events: none; }
 .bh i { display: block; width: 100%; height: 100%; border-radius: 50%; background: currentColor; box-shadow: 0 0 8px currentColor; }
 
+/* ---------- script names ---------- */
+.lat {
+  font-family: var(--script);
+  font-weight: 400;
+  font-size: 1.35em;
+  line-height: 1;
+  direction: ltr;
+  unicode-bidi: isolate;
+  padding: 0 0.08em;
+}
+
+/* ---------- gate ---------- */
+.gate { display: none; }
+
+.js .gate {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
+  background: rgba(15, 10, 43, 0.5);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  transition: opacity 1s ease, transform 1s ease, filter 1s ease;
+}
+
+.gate.open { opacity: 0; transform: scale(1.12); filter: blur(12px); pointer-events: none; }
+
+.gate .kicker { margin: 0; color: var(--muted); font-size: 1rem; }
+
+.gate .gname {
+  margin: 0;
+  font-family: var(--script);
+  font-weight: 400;
+  font-size: clamp(4.4rem, 24vw, 7.5rem);
+  line-height: 1.15;
+  padding: 0.1em 0.25em;
+  background: linear-gradient(100deg, var(--gold), var(--blush), var(--rose), var(--gold));
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 22px rgba(255, 159, 189, 0.45));
+  animation: shimmer 8s linear infinite;
+}
+
+.seal {
+  position: relative;
+  width: 7.5rem;
+  height: 7.5rem;
+  margin-block: 0.75rem;
+  border: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  background: radial-gradient(circle at 35% 30%, #ffb3cb, #ff4f86 55%, #8a2f86);
+  box-shadow: 0 0 44px rgba(255, 111, 159, 0.65), inset 0 -6px 14px rgba(0, 0, 0, 0.25);
+  animation: beat 1.8s ease-in-out infinite;
+}
+
+.seal svg { width: 3.2rem; height: 3.2rem; fill: #fff0f5; }
+
+.seal::before, .seal::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 159, 189, 0.55);
+  animation: ring 2.6s ease-out infinite;
+  pointer-events: none;
+}
+.seal::after { animation-delay: 1.3s; }
+
+@keyframes ring { from { transform: scale(1); opacity: 0.85; } to { transform: scale(1.75); opacity: 0; } }
+
+.gate .hint { margin: 0; font-size: 1.15rem; font-weight: 700; color: var(--text); }
+.gate .sound { margin: 0; color: var(--muted); font-size: 0.92rem; }
+
+/* ---------- page shell ---------- */
 .page {
   position: relative;
   z-index: 2;
   max-width: 34rem;
   margin: 0 auto;
+  transition: opacity 0.9s ease;
 }
 
-.pane { animation: paneIn 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.js:not(.opened) .page { opacity: 0; }
+
+.opened .pane { animation: paneIn 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
 @keyframes paneIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
 
 .js .reveal {
@@ -139,37 +229,50 @@ body {
 }
 .js .reveal.in { opacity: 1; transform: none; }
 
+.js .words .w {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(10px);
+  filter: blur(6px);
+  transition: opacity 0.7s ease, transform 0.7s ease, filter 0.7s ease;
+  transition-delay: calc(var(--i) * 75ms);
+}
+.js .words.in .w { opacity: 1; transform: none; filter: none; }
+
 /* progress dots */
 .dots { display: flex; justify-content: center; gap: 0.6rem; padding-top: 1.75rem; }
 .dots i { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: rgba(255, 255, 255, 0.2); transition: all 0.4s ease; }
 .dots i.on { width: 1.6rem; border-radius: 1rem; background: linear-gradient(90deg, var(--rose), var(--gold)); box-shadow: 0 0 12px rgba(255, 159, 189, 0.7); }
 
-/* hero */
+/* ---------- hero ---------- */
 .hero {
-  padding-block: 2.5rem 2rem;
+  padding-block: 2.25rem 2rem;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 0.9rem;
 }
 
 .tag { margin: 0; color: var(--muted); font-size: 0.95rem; }
 
 .name {
   margin: 0;
-  font-family: var(--display);
-  font-weight: 700;
-  font-size: clamp(3.8rem, 20vw, 6.6rem);
-  line-height: 1.3;
+  font-family: var(--script);
+  font-weight: 400;
+  font-size: clamp(4.6rem, 25vw, 8.2rem);
+  line-height: 1.15;
+  padding: 0.1em 0.25em;
+  direction: ltr;
   background: linear-gradient(100deg, var(--gold), var(--blush), var(--rose), var(--gold));
   background-size: 220% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   filter: drop-shadow(0 0 22px rgba(255, 159, 189, 0.4));
-  animation: nameIn 1.5s ease both, shimmer 8s linear infinite;
 }
+
+.opened .name { animation: nameIn 1.5s ease both, shimmer 8s linear infinite; }
 
 @keyframes nameIn {
   from { opacity: 0; transform: scale(0.88); filter: blur(14px) drop-shadow(0 0 0 rgba(255, 159, 189, 0)); }
@@ -177,10 +280,20 @@ body {
 }
 @keyframes shimmer { to { background-position: -220% 0; } }
 
-.name.small { font-size: clamp(2.8rem, 14vw, 4.6rem); }
+.name.small { font-size: clamp(3.6rem, 18vw, 5.6rem); }
+
+.title-q {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: clamp(2.6rem, 13vw, 4.2rem);
+  line-height: 1.4;
+  color: var(--gold);
+  text-shadow: 0 0 24px rgba(255, 224, 168, 0.4);
+}
 
 .lede { margin: 0; max-width: 25rem; }
-.who { margin: 0; color: var(--gold); font-weight: 700; }
+.who { margin: 0; color: var(--gold); font-weight: 700; font-size: 1.15rem; }
 
 .band { padding-block: 2.25rem; border-top: 1px solid var(--line); }
 
@@ -198,7 +311,7 @@ h2 {
 p { margin: 0 0 1rem; max-width: 65ch; }
 p:last-child { margin-bottom: 0; }
 
-/* song */
+/* ---------- song card ---------- */
 .song {
   display: flex;
   align-items: center;
@@ -226,23 +339,20 @@ p:last-child { margin-bottom: 0; }
 .playing .disc { animation: spin 5s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.song-text { min-width: 0; }
+.song-text { min-width: 0; flex: 1; }
 .song-text p { margin: 0; }
 .song-label { color: var(--muted); font-size: 0.9rem; }
-.song-title { font-family: var(--display); font-size: 1.4rem; line-height: 1.6; color: var(--gold); }
+.song-title { font-family: var(--script); font-size: 2rem; line-height: 1.3; color: var(--gold); direction: ltr; text-align: start; }
 
-.yt {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  max-width: 100%;
-  margin-top: 1rem;
-  border-radius: 1rem;
-  overflow: hidden;
-  border: 1px solid var(--line);
-}
-.yt iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.eq { display: flex; align-items: flex-end; gap: 3px; height: 1.5rem; flex: none; }
+.eq i { width: 3px; height: 25%; border-radius: 2px; background: var(--rose); }
+.playing .eq i { animation: eq 1s ease-in-out infinite; }
+.eq i:nth-child(2) { animation-delay: 0.2s; }
+.eq i:nth-child(3) { animation-delay: 0.45s; }
+.eq i:nth-child(4) { animation-delay: 0.1s; }
+@keyframes eq { 0%, 100% { height: 25%; } 50% { height: 100%; } }
 
-/* buttons */
+/* ---------- buttons ---------- */
 .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
 
 .btn {
@@ -266,19 +376,14 @@ p:last-child { margin-bottom: 0; }
 .btn:active { transform: translateY(0); }
 .btn:disabled { opacity: 0.55; cursor: default; transform: none; }
 
-.btn.ghost {
-  background: transparent;
-  color: var(--rose);
-  border-color: var(--rose);
-  box-shadow: none;
-}
+.btn.ghost { background: transparent; color: var(--rose); border-color: var(--rose); box-shadow: none; }
 
-.btn:focus-visible, .choice:focus-visible, textarea:focus-visible, .music:focus-visible {
+.btn:focus-visible, .choice:focus-visible, textarea:focus-visible, .music:focus-visible, .seal:focus-visible {
   outline: 3px solid var(--gold);
   outline-offset: 3px;
 }
 
-/* feelings */
+/* ---------- feelings ---------- */
 ul.likes { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.9rem; }
 ul.likes li { position: relative; padding-inline-start: 1.6rem; }
 ul.likes li::before {
@@ -317,8 +422,9 @@ ul.likes li::before {
   margin: 0;
   font-family: var(--display);
   font-weight: 700;
-  font-size: clamp(2.3rem, 10.5vw, 3.5rem);
-  line-height: 1.5;
+  font-size: clamp(2.2rem, 10vw, 3.4rem);
+  line-height: 1.7;
+  padding-inline: 0.2em;
   background: linear-gradient(100deg, var(--rose), var(--blush), var(--gold), var(--rose));
   background-size: 220% 100%;
   -webkit-background-clip: text;
@@ -331,9 +437,9 @@ ul.likes li::before {
 
 .caption { margin: 0; color: var(--muted); font-size: 0.98rem; }
 
-.sign { margin-top: 1.5rem; font-family: var(--display); font-size: 1.55rem; line-height: 1.6; color: var(--gold); }
+.sign { margin-top: 1.5rem; font-family: var(--display); font-size: 1.55rem; line-height: 1.8; color: var(--gold); }
 
-/* answer */
+/* ---------- answer ---------- */
 .choices { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.25rem; }
 
 .choice {
@@ -375,7 +481,7 @@ textarea {
 
 .status { min-height: 1.5rem; margin: 0.5rem 0 0; color: var(--muted); font-size: 0.95rem; }
 
-/* music button */
+/* ---------- music button ---------- */
 .music {
   position: fixed;
   z-index: 5;
@@ -402,8 +508,9 @@ textarea {
 @keyframes pulse { 50% { box-shadow: 0 0 32px rgba(255, 159, 189, 0.8); } }
 
 @media (prefers-reduced-motion: reduce) {
-  .aurora i, .name, .say, .bigheart, .pane, .result, .playing .disc, .playing .music { animation: none; }
-  .js .reveal { opacity: 1; transform: none; transition: none; }
+  .aurora i, .name, .gate .gname, .say, .bigheart, .seal, .seal::before, .seal::after, .pane, .result,
+  .playing .disc, .playing .music, .playing .eq i { animation: none !important; }
+  .js .reveal, .js .words .w { opacity: 1; transform: none; filter: none; transition: none; }
   #hearts { display: none; }
 }
 </style>
@@ -418,6 +525,17 @@ textarea {
 <canvas id="sky" aria-hidden="true"></canvas>
 <div id="hearts" aria-hidden="true"></div>
 
+<!-- Gate: one tap opens the letter and starts the song -->
+<div class="gate" id="gate">
+  <p class="kicker">رسالة ليكي</p>
+  <p class="gname" lang="en">Mohra</p>
+  <button type="button" class="seal" id="seal" aria-label="افتحي الرسالة">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#heart"/></svg>
+  </button>
+  <p class="hint">اضغطي عشان تفتحي الرسالة</p>
+  <p class="sound" id="soundNote" hidden>فيها أغنية، فارفعي الصوت شوية.</p>
+</div>
+
 <main class="page" lang="ar">
   <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
 
@@ -425,9 +543,9 @@ textarea {
   <div class="pane" data-view="start">
     <header class="hero">
       <p class="tag reveal">اتكتبت الساعة ٢ الفجر</p>
-      <h1 class="name">مهرائيل</h1>
+      <h1 class="name" lang="en">Mohra</h1>
       <p class="who reveal" id="who" hidden style="--d:.2s"></p>
-      <p class="lede reveal" style="--d:.35s">عارف إننا عمرنا ما اتكلمنا، بس عندي كلام ليكي من سنة ونص.</p>
+      <p class="lede words">عارف إننا عمرنا ما اتكلمنا، بس عندي كلام ليكي من سنة ونص.</p>
     </header>
 
     <section class="band reveal" style="--d:.1s">
@@ -435,15 +553,14 @@ textarea {
       <div class="song">
         <div class="disc" aria-hidden="true"></div>
         <div class="song-text">
-          <p class="song-label">اخترتها ليكي</p>
-          <p class="song-title" id="songTitle">أغنية لجورج وسوف</p>
+          <p class="song-label">أغنية اخترتها ليكي</p>
+          <p class="song-title" id="songTitle" lang="en">George Wassouf</p>
         </div>
+        <div class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
       </div>
-      <div class="yt" id="ytBox" hidden></div>
-      <p style="margin-top:1rem" id="songHelp">شغّلي الأغنية في صفحة جديدة وسيبيها تشتغل، وبعدين ارجعي هنا وكمّلي.</p>
+      <p style="margin-top:1rem" id="songHelp">اسمعيها وإنتي بتكملي.</p>
       <div class="actions">
-        <a class="btn ghost" id="songLink" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer">شغّلي الأغنية</a>
-        <button type="button" class="btn ghost" id="songPlay" hidden>شغّلي الأغنية</button>
+        <a class="btn ghost" id="songLink" href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer" hidden>شغّلي الأغنية</a>
         <a class="btn" href="#feelings">كمّلي</a>
       </div>
     </section>
@@ -452,23 +569,23 @@ textarea {
   <!-- 2. Feelings -->
   <div class="pane" data-view="feelings" hidden>
     <header class="hero">
-      <h1 class="name small">مهرائيل</h1>
-      <p class="lede reveal">اللي كان جوايا من وقت طويل.</p>
+      <h1 class="name small" lang="en">Mohra</h1>
+      <p class="lede words">اللي كان جوايا من وقت طويل.</p>
     </header>
 
     <section class="band reveal">
       <h2>من سنة ونص</h2>
-      <p>من حوالي سنة ونص وأنا بحبك من بعيد. عمري ما كلمتك، ومعرفتش أقولك، وفضلت ساكت.</p>
+      <p class="words">من حوالي سنة ونص وأنا بحبك من بعيد. عمري ما كلمتك، ومعرفتش أقولك، وفضلت ساكت.</p>
     </section>
 
     <section class="band reveal">
       <h2>ليه بقولك دلوقتي</h2>
-      <p>تعبت من الكتمان، وحسيت إنه ماينفعش أخبي أكتر من كده. ومش عايزك تفضلي من غير ما تعرفي.</p>
+      <p class="words">تعبت من الكتمان، وحسيت إنه ماينفعش أخبي أكتر من كده. ومش عايزك تفضلي من غير ما تعرفي.</p>
     </section>
 
     <section class="confess reveal">
       <svg class="bigheart" viewBox="0 0 24 24" role="img" aria-label="قلب"><use href="#heart"/></svg>
-      <p class="say">أنا بحبك يا مهرائيل</p>
+      <p class="say">أنا بحبك يا <span class="lat" lang="en">Mohra</span></p>
       <p class="caption">وعارف إن كلامي مفاجئ.</p>
     </section>
 
@@ -490,7 +607,7 @@ textarea {
   <!-- 3. Answer -->
   <div class="pane" data-view="answer" hidden>
     <header class="hero">
-      <h1 class="name small">إيه رأيك؟</h1>
+      <h1 class="title-q">إيه رأيك؟</h1>
       <p class="lede">اختاري اللي بيعبر عنك. كل اختيار مقبول ومحترم، وإنك ماتردييش خالص ده كمان حقك.</p>
     </header>
 
@@ -529,31 +646,43 @@ textarea {
 <script>
 (function () {
   /* ====== Edit these ======
-     FROM_NAME: your first name, so she knows who wrote this.
-     SONG.youtubeId: the id of the video (the part after v= in the link). Embeds the official player on the first page.
-     SONG.file: path of an audio file you have the rights to, e.g. '/song.mp3', placed in the public folder.
-     With neither, the button opens a YouTube search in a new tab. */
-  var FROM_NAME = '';
+     FROM_NAME: your name, shown in Latin letters.
+     SONG.file: link or path of the audio file. With no file, a button opens a YouTube search instead.
+     SUPABASE_*: Project URL and the publishable key (safe to expose, it can only add rows). */
+  var FROM_NAME = 'Romany';
   var SONG = {
-    title: '',
-    youtubeId: '',
+    title: 'George Wassouf',
     file: 'https://cdn.jsdelivr.net/gh/romeo311020/download-ROMEO-LIVE-TV@main/media/songs/1795135046517________.mp3',
-    query: 'جورج وسوف أغاني حب'
+    query: 'George Wassouf love songs'
   };
-  /* Supabase: Project URL and the anon / publishable key (safe to expose, it can only add rows). */
-  var SUPABASE_URL = '';
-  var SUPABASE_KEY = '';
+  var SUPABASE_URL = 'https://xqdbpcjhvjbgsmeaqlvi.supabase.co';
+  var SUPABASE_KEY = 'sb_publishable_nWVfgtKF18m5qYniNMr7Xw_bI3q98Fm';
 
+  var root = document.documentElement;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var COLORS = ['#ff9fbd', '#ffd0dc', '#ff6f9f', '#ffe0a8'];
   var HEART = '<svg viewBox="0 0 24 24"><use href="#heart"/></svg>';
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+
+  function latSpan(text) {
+    var s = document.createElement('span');
+    s.className = 'lat';
+    s.setAttribute('lang', 'en');
+    s.textContent = text;
+    return s;
+  }
 
   /* ---- who ---- */
   if (FROM_NAME) {
     var who = document.getElementById('who');
-    who.textContent = 'أنا ' + FROM_NAME;
+    who.appendChild(document.createTextNode('أنا '));
+    who.appendChild(latSpan(FROM_NAME));
     who.hidden = false;
-    document.getElementById('sign').textContent = 'من ' + FROM_NAME + '، اللي بيحبك من بعيد';
+    var sign = document.getElementById('sign');
+    sign.textContent = '';
+    sign.appendChild(document.createTextNode('من '));
+    sign.appendChild(latSpan(FROM_NAME));
+    sign.appendChild(document.createTextNode('، اللي بيحبك من بعيد'));
   }
 
   /* ---- pages ---- */
@@ -571,88 +700,104 @@ textarea {
   window.addEventListener('hashchange', show);
   show();
 
-  /* ---- reveal on scroll ---- */
-  var items = document.querySelectorAll('.reveal');
-  if ('IntersectionObserver' in window) {
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) {
-          en.target.classList.add('in');
-          io.unobserve(en.target);
-        }
-      });
-    }, { threshold: 0.12 });
-    items.forEach(function (el) { io.observe(el); });
-  } else {
-    items.forEach(function (el) { el.classList.add('in'); });
+  /* ---- split text into words for the reveal ---- */
+  var wordEls = document.querySelectorAll('.words');
+  for (var k = 0; k < wordEls.length; k++) {
+    var el = wordEls[k];
+    var parts = el.textContent.trim().split(/\s+/);
+    el.textContent = '';
+    for (var q = 0; q < parts.length; q++) {
+      var w = document.createElement('span');
+      w.className = 'w';
+      w.style.setProperty('--i', Math.min(q, 26));
+      w.textContent = parts[q];
+      el.appendChild(w);
+      if (q < parts.length - 1) el.appendChild(document.createTextNode(' '));
+    }
+  }
+
+  /* ---- reveal on scroll (starts after the gate opens) ---- */
+  function initReveal() {
+    var items = document.querySelectorAll('.reveal, .words');
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) {
+            en.target.classList.add('in');
+            io.unobserve(en.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      items.forEach(function (it) { io.observe(it); });
+    } else {
+      items.forEach(function (it) { it.classList.add('in'); });
+    }
   }
 
   /* ---- song ---- */
   var songLink = document.getElementById('songLink');
-  var songPlay = document.getElementById('songPlay');
   var songHelp = document.getElementById('songHelp');
-  var ytBox = document.getElementById('ytBox');
   var music = document.getElementById('music');
   var audio = document.getElementById('bgm');
   if (SONG.title) document.getElementById('songTitle').textContent = SONG.title;
 
-  if (SONG.youtubeId) {
-    var f = document.createElement('iframe');
-    f.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(SONG.youtubeId) + '?rel=0&playsinline=1';
-    f.title = 'الأغنية';
-    f.allow = 'autoplay; encrypted-media; picture-in-picture';
-    f.setAttribute('allowfullscreen', '');
-    ytBox.appendChild(f);
-    ytBox.hidden = false;
-    songLink.hidden = true;
-    songHelp.textContent = 'اضغطي تشغيل في الفيديو، وسيبيها تشتغل وإنتي بتكملي.';
-  } else if (SONG.file) {
+  if (SONG.file) {
     audio.src = SONG.file;
-    songLink.hidden = true;
-    songPlay.hidden = false;
     music.hidden = false;
-    songHelp.textContent = 'اضغطي تشغيل وسيبيها تشتغل وإنتي بتكملي. هتلاقي زرار الأغنية تحت في كل الصفحات.';
+    document.getElementById('soundNote').hidden = false;
+    songHelp.textContent = 'الأغنية شغالة، وتقدري توقفيها من الزرار اللي تحت.';
     var sync = function () {
       var p = !audio.paused;
       document.body.classList.toggle('playing', p);
-      songPlay.textContent = p ? 'وقّفي الأغنية' : 'شغّلي الأغنية';
       music.setAttribute('aria-label', p ? 'إيقاف الأغنية' : 'تشغيل الأغنية');
     };
-    var toggle = function () {
+    audio.addEventListener('play', sync);
+    audio.addEventListener('pause', sync);
+    music.addEventListener('click', function () {
       if (audio.paused) {
         var pr = audio.play();
         if (pr && pr.catch) pr.catch(function () {});
       } else {
         audio.pause();
       }
-    };
-    audio.addEventListener('play', sync);
-    audio.addEventListener('pause', sync);
-    songPlay.addEventListener('click', toggle);
-    music.addEventListener('click', toggle);
+    });
   } else {
     songLink.href = 'https://www.youtube.com/results?search_query=' + encodeURIComponent(SONG.query);
+    songLink.hidden = false;
+    songHelp.textContent = 'شغّلي الأغنية في صفحة جديدة وسيبيها تشتغل، وبعدين ارجعي هنا وكمّلي.';
+  }
+
+  function startMusic() {
+    if (!SONG.file) return;
+    try { audio.volume = 0; } catch (e) {}
+    var pr = audio.play();
+    if (pr && pr.catch) pr.catch(function () {});
+    var v = 0;
+    var iv = setInterval(function () {
+      v += 0.05;
+      try { audio.volume = Math.min(v, 0.85); } catch (e) {}
+      if (v >= 0.85) clearInterval(iv);
+    }, 200);
   }
 
   /* ---- hearts ---- */
   var layer = document.getElementById('hearts');
-  function rnd(a, b) { return a + Math.random() * (b - a); }
 
   if (!reduce) {
     var n = window.innerWidth < 600 ? 10 : 18;
     for (var i = 0; i < n; i++) {
       var t = rnd(14, 26);
-      var h = document.createElement('span');
-      h.className = 'fh';
-      h.style.setProperty('--x', rnd(2, 96).toFixed(1) + '%');
-      h.style.setProperty('--s', rnd(11, 28).toFixed(0) + 'px');
-      h.style.setProperty('--t', t.toFixed(1) + 's');
-      h.style.setProperty('--dl', (-rnd(0, t)).toFixed(1) + 's');
-      h.style.setProperty('--sw', rnd(3, 6).toFixed(1) + 's');
-      h.style.setProperty('--o', rnd(0.15, 0.42).toFixed(2));
-      h.style.setProperty('--c', COLORS[(Math.random() * COLORS.length) | 0]);
-      h.innerHTML = HEART;
-      layer.appendChild(h);
+      var hh = document.createElement('span');
+      hh.className = 'fh';
+      hh.style.setProperty('--x', rnd(2, 96).toFixed(1) + '%');
+      hh.style.setProperty('--s', rnd(11, 28).toFixed(0) + 'px');
+      hh.style.setProperty('--t', t.toFixed(1) + 's');
+      hh.style.setProperty('--dl', (-rnd(0, t)).toFixed(1) + 's');
+      hh.style.setProperty('--sw', rnd(3, 6).toFixed(1) + 's');
+      hh.style.setProperty('--o', rnd(0.15, 0.42).toFixed(2));
+      hh.style.setProperty('--c', COLORS[(Math.random() * COLORS.length) | 0]);
+      hh.innerHTML = HEART;
+      layer.appendChild(hh);
     }
   }
 
@@ -683,9 +828,25 @@ textarea {
   }
 
   document.addEventListener('pointerdown', function (e) {
-    if (e.target.closest && e.target.closest('textarea, .choice, iframe')) return;
+    if (e.target.closest && e.target.closest('textarea, .choice, .seal')) return;
     burst(e.clientX, e.clientY, 6, 70, 'heart');
   });
+
+  /* ---- gate ---- */
+  var gate = document.getElementById('gate');
+  var seal = document.getElementById('seal');
+  var opened = false;
+  function openGate() {
+    if (opened) return;
+    opened = true;
+    startMusic();
+    root.classList.add('opened');
+    gate.classList.add('open');
+    burst(window.innerWidth / 2, window.innerHeight / 2, 34, 230, 'heart');
+    initReveal();
+    setTimeout(function () { gate.hidden = true; }, 1100);
+  }
+  seal.addEventListener('click', openGate);
 
   /* ---- answer ---- */
   var REPLIES = {
@@ -718,18 +879,18 @@ textarea {
 
   for (var b = 0; b < btns.length; b++) {
     btns[b].addEventListener('click', function () {
-      var k = this.getAttribute('data-k');
-      current = k;
+      var key = this.getAttribute('data-k');
+      current = key;
       sendBtn.disabled = false;
       for (var j = 0; j < btns.length; j++) btns[j].setAttribute('aria-pressed', btns[j] === this ? 'true' : 'false');
-      note.textContent = REPLIES[k].note;
-      msg.value = REPLIES[k].msg;
+      note.textContent = REPLIES[key].note;
+      msg.value = REPLIES[key].msg;
       status.textContent = '';
       result.hidden = false;
       result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       var cx = window.innerWidth / 2, cy = window.innerHeight * 0.72;
-      if (k === 'yes') burst(cx, cy, 40, 240, 'heart');
-      if (k === 'think') burst(cx, cy, 22, 160, 'dot');
+      if (key === 'yes') burst(cx, cy, 40, 240, 'heart');
+      if (key === 'think') burst(cx, cy, 22, 160, 'dot');
     });
   }
 
